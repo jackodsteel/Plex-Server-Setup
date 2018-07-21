@@ -15,7 +15,7 @@ if [[ -f  "$MPOINT/mountcheck" ]]; then
 else
     echo "$(date "+%d.%m.%Y %T") ERROR: Drive not mounted, remount in progress." | tee -a "$LOGFILE"
     # Unmount before remounting
-    #fusermount -uz $MPOINT | tee -a "$LOGFILE"
+    fusermount -uz $MPOINT | tee -a "$LOGFILE"
     /usr/local/bin/plexdrive mount $MPOINT -o allow_other -v 2 &>>$LOGFILE &
 
     sleep 1
