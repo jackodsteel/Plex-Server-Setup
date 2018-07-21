@@ -8,14 +8,15 @@ https://github.com/dweidenfeld/plexdrive
 
 * Configs:
 
-Supplied in configs folder as .plexdrive (with private keys removed)
+Supplied in configs folder as .plexdrive (with private keys removed)    
 Default location is /root/
 
 #### Rclone to decrypt the directories
 https://rclone.org/downloads/
 
 * Configs:
-Supplied in configs folder as rclone (with private keys removed)
+
+Supplied in configs folder as rclone (with private keys removed)    
 Default location is /root/.config/
 
 ### Steps:
