@@ -3,7 +3,7 @@ All configurations and information to replicate my Plex server
 
 ## Read only setup:
 
-#### Plexdrive to host the main Google Drive
+#### Plexdrive to host the main Google Drive (Version 5)
 https://github.com/dweidenfeld/plexdrive
 
 * Configs:
@@ -11,7 +11,7 @@ https://github.com/dweidenfeld/plexdrive
 Supplied in configs folder as .plexdrive (with private keys removed)    
 Default location is /root/
 
-#### Rclone to decrypt the directories
+#### Rclone to decrypt the directories (Latest, confirmed working with V1.42)
 https://rclone.org/downloads/
 
 * Configs:
