@@ -1,0 +1,6 @@
+#!/bin/bash
+
+find /run/systemd/system -name "session-*.scope" -delete
+rm -rf /run/systemd/system/session*scope*
+systemctl | grep "abandoned" | grep -e "-[[:digit:]]" | sed "s/\.scope.*/.scope/" | xargs systemctl stop
+systemctl |grep "of user git" |grep "abandoned" |grep -e "-[[:digit:]]" |sed "s/\.scope.*/.scope/" |xargs systemctl stop

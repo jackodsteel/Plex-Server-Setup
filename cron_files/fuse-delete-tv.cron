@@ -1,0 +1,20 @@
+#!/bin/bash
+# Remove unionFS hidden files created by Sonarr removing older content
+# credit this portion to @numberedthought :)
+
+logfile="/home/scripts/logs/fuse-delete-tv.cron.log"
+
+if pidof -o %PPID -x "fuse-delete-tv.cron"; then
+echo "$(date "+%d.%m.%Y %T") EXIT: fuse-delete-tv.cron already running."
+exit 1
+fi
+
+find /home/plex/fuse-tv/.unionfs-fuse -name '*_HIDDEN~' | while read line; do
+oldPath=${line#/home/plex/fuse-tv/.unionfs-fuse}
+newPath=tv-gd:${oldPath%_HIDDEN~}
+echo "$(date "+%d.%m.%Y %T") REMOVED $newPath" | tee -a "$logfile"
+rclone delete --drive-use-trash "$newPath"
+rm -f "$line"
+done
+find "/home/plex/fuse-tv/.unionfs-fuse" -mindepth 1 -type d -empty -delete
+exit
