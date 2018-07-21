@@ -3,7 +3,7 @@ All configurations and information to replicate my Plex server
 
 ## Read only setup:
 
-####Plexdrive to host the main Google Drive
+#### Plexdrive to host the main Google Drive
 https://github.com/dweidenfeld/plexdrive
 
 * Configs:
