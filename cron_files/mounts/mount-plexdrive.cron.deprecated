@@ -20,15 +20,16 @@ else
         -o allow_other \
         -v 2 &>>$LOGFILE &
 
-sleep 1
+    sleep 1
 
-if [[ -f  "$MPOINT/mountcheck" ]]; then
-    echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$LOGFILE"
-else
-    echo "$(date "+%d.%m.%Y %T") CRITICAL: Remount failed." | tee -a "$LOGFILE"
+    if [[ -f  "$MPOINT/mountcheck" ]]; then
+        echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$LOGFILE"
+    else
+        echo "$(date "+%d.%m.%Y %T") CRITICAL: Remount failed." | tee -a "$LOGFILE"
+    fi
 fi
-fi
-exit
+
+exit 0
 
 ## Default is with minimal options and if needed use aditional flags copy paste them above line: -v 2 &>>$LOGFILE &
 ##        Note: Only lines eg options with - or -- in front
