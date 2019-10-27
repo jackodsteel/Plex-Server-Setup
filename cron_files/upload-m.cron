@@ -12,11 +12,11 @@ FROM="/home/plex/m-r/"
 TO="m-gd:/"
 
 # CHECK FOR FILES IN FROM FOLDER THAT ARE OLDER THEN 15 MINUTES
-if find $FROM* -type f -mmin +15 | read
+if find $FROM* ! -name "*.partial~" ! -path "*.unionfs-fuse*" -type f -mmin +15 | read
 then
 echo "$(date "+%d.%m.%Y %T") RCLONE UPLOAD STARTED" | tee -a $LOGFILE
 # MOVE FILES OLDER THEN 15 MINUTES
-rclone move $FROM $TO -c --no-traverse --transfers=300 --checkers=300 --delete-after --min-age 15m --log-file=$LOGFILE --bwlimit 20M --exclude .unionfs-fuse**
+rclone move $FROM $TO -c --no-traverse --transfers=300 --checkers=300 --delete-after --min-age 15m --log-file=$LOGFILE --bwlimit 20M --exclude .unionfs-fuse** --exclude *.partial~
 echo "$(date "+%d.%m.%Y %T") RCLONE UPLOAD ENDED" | tee -a $LOGFILE
 fi
 exit
