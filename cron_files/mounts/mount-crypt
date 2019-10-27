@@ -27,9 +27,9 @@ else
         --checkers 16 \
         --quiet \
         --stats 0 \
-    $MOUNT $MOUNT_LOCATION &
+        $MOUNT $MOUNT_LOCATION &
 
-    sleep 1
+    sleep 5
 
     if [[ -f "${MOUNT_LOCATION}/mountcheck" ]]; then
         echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$logfile"
