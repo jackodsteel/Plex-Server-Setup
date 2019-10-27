@@ -5,11 +5,13 @@ Currently used folder structure:
 
 /merged contains the combined remote and local content for access by programs such as Sonarr/Radarr/Plex/Sabnzbd/Deluge.
 
+```
 /merged:
 	/torrents
 	/sabnzbd
 	/tv
 	/movies
+```
 
 Below are the current mounts being used. The first three are rclone mounts.
 
@@ -22,17 +24,19 @@ We then use mergerfs to create the /merged folder that combines the previously m
 
 Note: All media related folders including downloads for usenet and torrents must also be in the /merged directory as otherwise the download clients will need to perform a full move instead of being able to use hardlinks.
 
+
 Mounts:
-	Google Drive ->  /mnt/googledrive via rclone
-	Encrypted M ->  /mnt/data/movies via rclone
-	Encrypted TV -> /mnt/data/tv via rclone
-	Merged /mnt/data and /data -> /merged via mergerfs
+* Google Drive ->  /mnt/googledrive via rclone
+* Encrypted M ->  /mnt/data/movies via rclone
+* Encrypted TV -> /mnt/data/tv via rclone
+* Merged /mnt/data and /data -> /merged via mergerfs
 
 Files:
-    mount-rclone-drive.cron mounts the entire Google Drive to /mnt/googledrive
-    mount-m.cron mounts the rclone crypt for movies
-    mount-tv.cron mounts the rclone crypt for TV shows
-    mount-merge.cron handles the /mnt/data and /data merge using mergerfs
+* mount-rclone-drive.cron mounts the entire Google Drive to /mnt/googledrive
+* mount-crypt Is a generic mounting script for rclone crypt mounts used by mount-m and mount-tv
+* mount-m.cron mounts the rclone crypt for movies
+* mount-tv.cron mounts the rclone crypt for TV shows
+* mount-merge.cron handles the /mnt/data and /data merge using mergerfs
 
 
 All files are expected to be run regularly using cron which can be setup as follows:
