@@ -8,12 +8,16 @@ MOUNTS="/data:/mnt/data"
 
 logfile="/home/scripts/logs/${SCRIPT_NAME}"
 
+is_mounted () {
+    awk -v mnt="$MOUNT_LOCATION" 'BEGIN {x=1} $2 == mnt {x=0} END {exit x}' /proc/mounts
+}
+
 if pidof -o %PPID -x $SCRIPT_NAME; then
     echo "$(date "+%d.%m.%Y %T") EXIT: ${SCRIPT_NAME} already running."
     exit 1
 fi
 
-if grep -qs '${MOUNT_LOCATION} ' /proc/mounts; then
+if is_mounted; then
     echo "$(date "+%d.%m.%Y %T") INFO: Check successful, merge mounted." | tee -a "$logfile"
     exit 0
 else
@@ -21,8 +25,10 @@ else
     # Unmount before remounting
     fusermount -uz $MOUNT_LOCATION | tee -a "$logfile"
     /usr/bin/mergerfs $MOUNTS $MOUNT_LOCATION -o rw,async_read=false,use_ino,allow_other,func.getattr=newest,category.action=all,category.create=ff,cache.files=partial,dropcacheonclose=true
+
     sleep 5
-    if grep -qs '${MOUNT_LOCATION} ' /proc/mounts; then
+
+    if is_mounted; then
         echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$logfile"
     else
         echo "$(date "+%d.%m.%Y %T") CRITICAL: Remount failed." | tee -a "$logfile"
