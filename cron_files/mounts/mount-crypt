@@ -1,0 +1,40 @@
+#!/bin/bash
+
+[ -z "$SCRIPT_NAME" ] && echo "Need to set SCRIPT_NAME" && exit 1;
+[ -z "$MOUNT_LOCATION" ] && echo "Need to set MOUNT_LOCATION" && exit 1;
+[ -z "$MOUNT" ] && echo "Need to set MOUNT" && exit 1;
+
+logfile="/home/scripts/logs/${SCRIPT_NAME}"
+
+if pidof -o %PPID -x $SCRIPT_NAME; then
+    echo "$(date "+%d.%m.%Y %T") EXIT: ${SCRIPT_NAME} already running."
+    exit 0
+fi
+
+if [[ -f "${MOUNT_LOCATION}/mountcheck" ]]; then
+    echo "$(date "+%d.%m.%Y %T") INFO: Check successful, ${MOUNT_LOCATION} mounted." | tee -a "$logfile"
+    exit 0
+else
+    echo "$(date "+%d.%m.%Y %T") ERROR: Crypt not mounted, remount in progress." | tee -a "$logfile"
+    # Unmount before remounting
+    fusermount -uz $MOUNT_LOCATION | tee -a "$logfile"
+    rclone mount \
+        --read-only \
+        --allow-non-empty \
+        --allow-other \
+        --max-read-ahead 2G \
+        --acd-templink-threshold 0 \
+        --checkers 16 \
+        --quiet \
+        --stats 0 \
+    $MOUNT $MOUNT_LOCATION &
+
+    sleep 1
+
+    if [[ -f "${MOUNT_LOCATION}/mountcheck" ]]; then
+        echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$logfile"
+    else
+        echo "$(date "+%d.%m.%Y %T") CRITICAL: Remount failed." | tee -a "$logfile"
+    fi
+fi
+exit 0
