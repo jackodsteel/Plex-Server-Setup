@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Monitor the diskspace and send a text if it's below the set value
+
+NEXMO_API_KEY=""
+NEXMO_API_SECRET=""
+TARGET_NUMBER=""
+SABNZBD_API_KEY=""
+
+logfile="/home/scripts/logs/send-sms-alerts.cron.log"
+sentfile="/home/scripts/sent_sms"
+sab_resume_url="http://127.0.0.1:65080/sabnzbd/api?output=text&apikey=${SABNZBD_API_KEY}&mode=resume"
+
+disk_limit_in_bytes=55000000
+reset_limit_in_bytes=65000000
+sms_message_text="Disk space is below 55GB"
+
+send_sms() {
+  curl -X POST https://rest.nexmo.com/sms/json -d api_key=$NEXMO_API_KEY -d api_secret=$NEXMO_API_SECRET -d to=$TARGET_NUMBER -d from='LeetServerPlex' -d text="$1" -w "\n" | tee -a $logfile
+}
+
+free_disk=$(df -k / | awk 'NR==2 {print $4}')
+if [ $free_disk -lt $disk_limit_in_bytes ] && [ ! -f $sentfile ]; then
+  echo $(date) | tee -a $logfile
+  echo "Disk space low, currently: $free_disk" | tee -a $logfile
+  send_sms "$sms_message_text"
+  touch $sentfile
+elif [ $free_disk -gt $reset_limit_in_bytes ] && [ -f $sentfile ]; then
+  echo $(date) | tee -a $logfile
+  echo "Disk space above limit, currently: $free_disk" | tee -a $logfile
+  rm -f $sentfile
+  curl "$sab_resume_url" | tee -a $logfile
+fi

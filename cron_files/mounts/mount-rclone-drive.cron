@@ -1,0 +1,37 @@
+#!/bin/bash
+## rclone drive mount (chmod a+x mount-rclone-drive.cron)
+## To mount the drive at reboot & to remount in case of failure type crontab -e and add 2 lines below (without ##):
+## @reboot /path/mount-rclone-drive.cron
+## * * * * *   /path/mount-rclone-drive.cron >/dev/null 2>&1
+
+## GLOBAL VARS
+LOGFILE="/home/scripts/logs/mount-rclone-drive.cron.log"
+MPOINT="/mnt/plexdrive/"
+DRIVE="drive:"
+
+
+## CHECK IF MOUNT ALREADY EXIST AND MOUNT IF NOT
+if [[ -f  "$MPOINT/mountcheck" ]]; then
+    echo "$(date "+%d.%m.%Y %T") INFO: Check successful, $MPOINT mounted." | tee -a "$LOGFILE"
+else
+    echo "$(date "+%d.%m.%Y %T") ERROR: Drive not mounted, remount in progress." | tee -a "$LOGFILE"
+    # Unmount before remounting
+#    fusermount -uz $MPOINT | tee -a "$LOGFILE"
+    /usr/bin/rclone mount $DRIVE $MPOINT \
+        --allow-other \
+        --dir-cache-time 96h \
+        --read-only \
+        --log-level INFO \
+        --log-file $LOGFILE \
+        --timeout 1h \
+        --umask 002 &
+
+sleep 10
+
+if [[ -f  "$MPOINT/mountcheck" ]]; then
+    echo "$(date "+%d.%m.%Y %T") INFO: Remount successful." | tee -a "$LOGFILE"
+else
+    echo "$(date "+%d.%m.%Y %T") CRITICAL: Remount failed." | tee -a "$LOGFILE"
+fi
+fi
+exit

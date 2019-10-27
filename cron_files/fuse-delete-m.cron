@@ -5,18 +5,18 @@
 
 logfile="/home/scripts/logs/fuse-delete-m.cron.log"
 
+
 if pidof -o %PPID -x "fuse-delete-m.cron"; then
-echo "$(date "+%d.%m.%Y %T") EXIT: fuse-delete-m.cron already running."
-exit 1
+  echo "$(date "+%d.%m.%Y %T") EXIT: fuse-delete-m.cron already running."
+  exit 1
 fi
 
-find /home/plex/fuse-m/.unionfs-fuse -name '*_HIDDEN~' | while read line; do
-oldPath=${line#/home/plex/fuse-m/.unionfs-fuse}
-newPath=m-gd:${oldPath%_HIDDEN~}
-echo "$(date "+%d.%m.%Y %T") REMOVED $newPath" | tee -a "$logfile"
-rclone delete --drive-use-trash "$newPath"
-rm "$line"
+find /home/plex/fuse-m/.unionfs-fuse -mmin +120 -name '*_HIDDEN~' | while read line; do
+  oldPath=${line#/home/plex/fuse-m/.unionfs-fuse}
+  newPath=m-gd:${oldPath%_HIDDEN~}
+  echo "$(date "+%d.%m.%Y %T") REMOVED $newPath" | tee -a "$logfile"
+  rclone delete --drive-use-trash "$newPath"
+  rm "$line"
 done
+
 find "/home/plex/fuse-m/.unionfs-fuse" -mindepth 1 -type d -empty -delete
-#
-##
