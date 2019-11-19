@@ -4,7 +4,7 @@ SCRIPT_NAME="mount-m.cron"
 
 MOUNT_LOCATION="/mnt/data/movies"
 
-MOUNT="dec-m:/"
+MOUNT="m-gd:/"
 
 MOUNT_CRYPT_SCRIPT_LOCATION="./mount-crypt"
 

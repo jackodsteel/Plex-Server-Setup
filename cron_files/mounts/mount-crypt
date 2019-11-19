@@ -20,18 +20,18 @@ else
     fusermount -uz $MOUNT_LOCATION | tee -a "$logfile"
     rclone mount \
         --read-only \
+        --allow-other \
+        --timeout 1h \
         --buffer-size 256M \
         --attr-timeout 1000h \
         --dir-cache-time 1000h \
         --poll-interval 15s \
-        --timeout 1h \
-        --allow-other \
         --max-read-ahead 2G \
         --checkers 16 \
         --umask 002 \
         --log-level INFO \
-        --stats 0 \
-        --log-file /opt/rclone/logs/rclone.log \
+        --stats 5m \
+        --log-file "$logfile" \
         $MOUNT $MOUNT_LOCATION &
 
     sleep 5

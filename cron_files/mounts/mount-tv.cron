@@ -4,7 +4,7 @@ SCRIPT_NAME="mount-tv.cron"
 
 MOUNT_LOCATION="/mnt/data/tv"
 
-MOUNT="dec-tv:/"
+MOUNT="tv-gd:/"
 
 MOUNT_CRYPT_SCRIPT_LOCATION="./mount-crypt"
 
