@@ -1,0 +1,19 @@
+---
+- name: Build jackett
+  docker_container:
+    name: jackett
+    image: linuxserver/jackett
+    pull: true
+    state: started
+    detach: true
+    restart_policy: always
+    env:
+      TZ: CST
+      PGID: "{{user.PID}}"
+      PUID: "{{user.PID}}"
+    ports:
+      - 9117:9117
+    volumes:
+      - "{{containers_folder}}/jackett/config:/config"
+      - "{{containers_folder}}/jackett/downloads:/downloads"
+      - /etc/localtime:/etc/localtime:ro

@@ -1,0 +1,20 @@
+---
+- name: Build sonarr
+  docker_container:
+    name: sonarr
+    image: linuxserver/sonarr
+    pull: true
+    state: started
+    detach: true
+    restart_policy: always
+    env:
+      PUID: "{{user.PID}}"
+      PGID: "{{user.PID}}"
+      TZ: CST
+    ports:
+      - 8989:8989
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{containers_folder}}/sonarr/config:/config"
+      - /docker/media/tv:/tv
+      - /docker/downloads:/data/completed

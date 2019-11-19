@@ -1,0 +1,29 @@
+---
+- include_vars: ./vars/users.yml
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+- name: "Create user accounts"
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.groups }}"
+    state: "present"
+  with_items: "{{ users }}"
+- name: "Add authorized keys"
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ lookup('file', 'files/'+ item.username + '.key.pub') }}"
+  with_items: "{{ users }}"
+- name: "Disable root login via SSH"
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+  notify: restart sshd

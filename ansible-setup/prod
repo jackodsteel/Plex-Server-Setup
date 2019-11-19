@@ -1,0 +1,2 @@
+[homelab]
+homeserver ansible_host=jacksteel.co.nz

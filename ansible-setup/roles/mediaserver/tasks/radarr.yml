@@ -1,0 +1,20 @@
+---
+- name: Build radarr
+  docker_container:
+    name: radarr
+    image: linuxserver/radarr
+    pull: true
+    state: started
+    detach: true
+    restart_policy: always
+    env:
+      TZ: CST
+      PGID: "{{user.PID}}"
+      PUID: "{{user.PID}}"
+    ports:
+      - 7878:7878
+    volumes:
+      - "{{containers_folder}}/radarr/config:/config"
+      - /docker/downloads:/data/completed
+      - /docker/media/movies:/movies
+      - /etc/localtime:/etc/localtime:ro

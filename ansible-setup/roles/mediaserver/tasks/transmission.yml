@@ -1,0 +1,29 @@
+---
+- name: Build Transmission
+  docker_container:
+    name: transmission
+    image: haugene/transmission-openvpn
+    pull: true
+    state: started
+    detach: true
+    restart_policy: always
+    log_driver: json-file
+    log_options:
+      max-size: 10m
+    env:
+      OPENVPN_PROVIDER: PIA
+      OPENVPN_CONFIG: Sweden
+      OPENVPN_USERNAME: '{{pia_user}}'
+      OPENVPN_PASSWORD: '{{pia_pass}}'
+      WEBPROXY_ENABLED: false
+      LOCAL_NETWORK: 10.0.0.0/24
+    ports:
+      - 9091:9091
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - "{{containers_folder}}/transmission/data:/data/transmission-home"
+      - /docker/downloads:/data/completed
+    capabilities:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun

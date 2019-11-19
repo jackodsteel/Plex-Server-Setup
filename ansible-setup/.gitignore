@@ -1,0 +1,11 @@
+.vault_pass
+.DS_Store
+.kitchen/
+.librarian
+site_retry
+*.lock
+*.retry
+chefignore
+tmp/
+.kitchen.local.yml
+host_vars/vault.yml

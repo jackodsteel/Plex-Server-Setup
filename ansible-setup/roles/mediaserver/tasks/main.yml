@@ -1,0 +1,63 @@
+---
+- include_vars: ./vars/main.yml
+- name: ensure apt-get is up to date and install items
+  apt:
+    name: "{{item}}"
+    state: present
+    update_cache: yes
+  with_items: "{{apt_list}}"
+- name: Install pip packages
+  pip:
+    name: "{{item}}"
+    state: present
+  with_items: "{{pip_list}}"
+- name: setup glances for monitoring
+  template:
+    src: templates/glances.service.j2
+    dest: /etc/systemd/system/glances.service
+    owner: root
+    group: root
+    mode: 00111
+- name: start glances
+  service:
+    name: glances
+    state: started
+- name: Make sure we have a 'wheel' group
+  group:
+    name: wheel
+    state: present
+- name: Allow 'wheel' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%wheel'
+    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+- name: create user
+  user:
+    name: "{{user.name}}"
+    comment: 'The man, the myth, the legend'
+    groups: wheel, docker
+    append: yes
+    state: present
+    createhome: yes
+- name: Create container folders
+  file:
+    path: "{{containers_folder}}"
+    state: directory
+    mode: 0775
+    owner: "{{user.name}}"
+- name: mount product image folder share
+  mount: 
+    state: "mounted" 
+    fstype: "cifs" 
+    opts: "username={{nas_user}},password={{nas_pass}},uid={{user.name}},gid={{user.name}},file_mode=0755,dir_mode=0755,exec" 
+    src: //10.0.0.62/data/home/andrew/docker
+    name: "/docker"
+  handler: Restart docker
+- import_tasks: 'plex.yml'
+- import_tasks: 'sonarr.yml'
+- import_tasks: 'radarr.yml'
+- import_tasks: 'jackett.yml'
+- import_tasks: 'transmission.yml'
+- import_tasks: 'heimdall.yml'
+
