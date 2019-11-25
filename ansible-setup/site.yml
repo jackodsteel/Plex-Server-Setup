@@ -13,5 +13,5 @@
 
   roles:
     - angstwad.docker_ubuntu
-    - ec3
+    - mediaserver
     - common

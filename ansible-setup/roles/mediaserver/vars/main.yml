@@ -1,5 +1,5 @@
 ---
-# vars file for ec3
+# vars file for mediaserver
 nas_address: //10.0.0.62/data/home/andrew/docker
 ovpn_folder: /tmp/ovpn
 containers_folder: /opt/server/containers
@@ -15,6 +15,3 @@ media_folders:
     movies: /docker/media/movies/
     tv: /docker/media/tv
     tv_manual: /docker/media/tv_manual
-user:
-  name: server
-  PID: 1000

@@ -13,8 +13,6 @@ provisioner:
   playbook: site.yml
   ansible_vault_password_file: .vault_pass
   require_chef_for_busser: false
-  additional_ssh_private_keys:
-  - ~/.ssh/hardhero-github
 
 platforms:
   - name: ubuntu-16.04
@@ -25,7 +23,7 @@ platforms:
   - name: ubuntu-18.04
     driver_config:
       provision_command:
-        - apt-get install python ansible docker-y
+        - apt-get install python ansible docker -y
 suites:
   - name: default
 

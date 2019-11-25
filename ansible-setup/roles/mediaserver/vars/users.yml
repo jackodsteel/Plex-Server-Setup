@@ -1,5 +1,5 @@
 ---
-# Each user should have a corresponding key file in host_vars/public_keys/{username}.key.pub
 users:
-- username: "jack"
+- username: jack
+  github: jackodsteel
   groups: wheel, www-data

@@ -22,24 +22,6 @@
   service:
     name: glances
     state: started
-- name: Make sure we have a 'wheel' group
-  group:
-    name: wheel
-    state: present
-- name: Allow 'wheel' group to have passwordless sudo
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-- name: create user
-  user:
-    name: "{{user.name}}"
-    comment: 'The man, the myth, the legend'
-    groups: wheel, docker
-    append: yes
-    state: present
-    createhome: yes
 - name: Create container folders
   file:
     path: "{{containers_folder}}"

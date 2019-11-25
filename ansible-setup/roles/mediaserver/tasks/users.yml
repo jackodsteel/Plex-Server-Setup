@@ -8,22 +8,24 @@
   lineinfile:
     dest: /etc/sudoers
     state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
-- name: "Create user accounts"
+    regexp: "^%wheel"
+    line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+- name: Create user accounts
   user:
     name: "{{ item.username }}"
     groups: "{{ item.groups }}"
-    state: "present"
+    state: present
   with_items: "{{ users }}"
-- name: "Add authorized keys"
+- name: Add authorized keys
   authorized_key:
     user: "{{ item.username }}"
-    key: "{{ lookup('file', 'files/'+ item.username + '.key.pub') }}"
+    key: "https://github.com/{{ item.github }}.keys"
+    state: present
+    exclusive: True
   with_items: "{{ users }}"
-- name: "Disable root login via SSH"
+- name: Disable root login via SSH
   lineinfile:
-    dest: "/etc/ssh/sshd_config"
+    dest: /etc/ssh/sshd_config
     regexp: "^PermitRootLogin"
-    line: "PermitRootLogin no"
+    line: PermitRootLogin no
   notify: restart sshd
