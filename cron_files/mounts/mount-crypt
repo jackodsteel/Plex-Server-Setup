@@ -25,9 +25,8 @@ else
         --buffer-size 256M \
         --attr-timeout 1000h \
         --dir-cache-time 1000h \
-        --poll-interval 15s \
         --max-read-ahead 2G \
-        --checkers 16 \
+        --poll-interval 15s \
         --umask 002 \
         --log-level INFO \
         --stats 5m \
